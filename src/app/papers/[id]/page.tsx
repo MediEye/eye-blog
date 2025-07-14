@@ -3,11 +3,7 @@ import { notFound } from 'next/navigation'
 import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline'
 import type { Paper } from '../../../generated/prisma'
 
-interface Props {
-  params: { id: string }
-}
-
-export default async function PaperDetailPage({ params }: Props) {
+export default async function PaperDetailPage({ params }: { params: { id: string } }) {
   const id = Number(params.id)
   if (isNaN(id)) return notFound()
   const paper: Paper | null = await getPaperById(id)

@@ -3,7 +3,6 @@
 import { PrismaClient } from "../../generated/prisma";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
@@ -39,7 +38,7 @@ export async function createPaper({
   content: string;
   isDraft?: boolean;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!isAdmin(session?.user?.email)) {
     throw new Error("管理者のみ投稿可能です");
   }
@@ -67,7 +66,7 @@ export async function updatePaper({
   content: string;
   isDraft?: boolean;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!isAdmin(session?.user?.email)) {
     throw new Error("管理者のみ編集可能です");
   }
@@ -80,7 +79,7 @@ export async function updatePaper({
 }
 
 export async function deletePaper(id: number) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!isAdmin(session?.user?.email)) {
     throw new Error("管理者のみ削除可能です");
   }
