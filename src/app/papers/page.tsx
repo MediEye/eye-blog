@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline'
 import { getPapers } from '../actions/paperActions'
-import type { Paper } from '@/generated/prisma'
-import EditDeleteButtons from '@/components/EditDeleteButtons'
+import type { Paper } from '../../generated/prisma'
+import EditDeleteButtons from '../../components/EditDeleteButtons'
 
 const categories = [
   'すべて', '白内障', '緑内障', '網膜疾患', '角膜疾患', '小児眼科', '神経眼科', '下書き'

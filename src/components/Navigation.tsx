@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session, status } = useSession()
 
   const categories = [
     { name: '白内障', href: '/category/cataract' },
@@ -61,6 +63,15 @@ export default function Navigation() {
             <Link href="/bookmarks" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
               ブックマーク
             </Link>
+            {/* サインイン・サインアウト */}
+            {status === 'loading' ? null : session ? (
+              <div className="flex items-center space-x-2 ml-4">
+                <span className="text-gray-700 text-sm">{session.user?.name || session.user?.email}</span>
+                <button onClick={() => signOut()} className="text-blue-600 hover:underline text-sm">サインアウト</button>
+              </div>
+            ) : (
+              <button onClick={() => signIn()} className="text-blue-600 hover:underline text-sm ml-4">サインイン</button>
+            )}
           </div>
 
           {/* Search and Mobile menu button */}
@@ -144,6 +155,17 @@ export default function Navigation() {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+            </div>
+            {/* サインイン・サインアウト（モバイル） */}
+            <div className="px-3 py-2">
+              {status === 'loading' ? null : session ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-700 text-sm">{session.user?.name || session.user?.email}</span>
+                  <button onClick={() => signOut()} className="text-blue-600 hover:underline text-sm">サインアウト</button>
+                </div>
+              ) : (
+                <button onClick={() => signIn()} className="text-blue-600 hover:underline text-sm">サインイン</button>
+              )}
             </div>
           </div>
         </div>

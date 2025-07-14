@@ -1,9 +1,17 @@
 "use server"
 
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "../../generated/prisma";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
+
+function isAdmin(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const admins = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim());
+  return admins.includes(email);
+}
 
 export async function getPapers({ includeDrafts = false }: { includeDrafts?: boolean } = {}) {
   return await prisma.paper.findMany({
@@ -31,6 +39,10 @@ export async function createPaper({
   content: string;
   isDraft?: boolean;
 }) {
+  const session = await getServerSession(authOptions);
+  if (!isAdmin(session?.user?.email)) {
+    throw new Error("管理者のみ投稿可能です");
+  }
   const paper = await prisma.paper.create({
     data: { title, author, category, tags, content, isDraft },
   });
@@ -55,6 +67,10 @@ export async function updatePaper({
   content: string;
   isDraft?: boolean;
 }) {
+  const session = await getServerSession(authOptions);
+  if (!isAdmin(session?.user?.email)) {
+    throw new Error("管理者のみ編集可能です");
+  }
   const paper = await prisma.paper.update({
     where: { id },
     data: { title, author, category, tags, content, isDraft },
@@ -64,6 +80,10 @@ export async function updatePaper({
 }
 
 export async function deletePaper(id: number) {
+  const session = await getServerSession(authOptions);
+  if (!isAdmin(session?.user?.email)) {
+    throw new Error("管理者のみ削除可能です");
+  }
   await prisma.paper.delete({ where: { id } });
   revalidatePath("/papers");
 } 
