@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { EyeIcon, BookmarkIcon, CalendarIcon, UserIcon, FolderIcon } from '@heroicons/react/24/outline'
+import type { DynamicParams } from '../../../types/router'
 
 // 仮の論文データ
 const papers = [
@@ -41,9 +42,8 @@ const papers = [
   }
 ]
 
-export default function CategoryPage() {
-  const params = useParams()
-  const category = decodeURIComponent(params.category as string)
+export default function CategoryPage({ params }: DynamicParams<'category'>) {
+  const category = decodeURIComponent(params.category)
   const filtered = papers.filter(p => p.category === category)
 
   return (

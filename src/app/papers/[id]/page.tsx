@@ -2,8 +2,9 @@ import { getPaperById } from '../../actions/paperActions'
 import { notFound } from 'next/navigation'
 import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline'
 import type { Paper } from '../../../generated/prisma'
+import type { DynamicParams } from '../../../types/router'
 
-export default async function PaperDetailPage({ params }) {
+export default async function PaperDetailPage({ params }: DynamicParams<'id'>) {
   const id = Number(params.id)
   if (isNaN(id)) return notFound()
   const paper: Paper | null = await getPaperById(id)

@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { EyeIcon, BookmarkIcon, CalendarIcon, UserIcon, TagIcon } from '@heroicons/react/24/outline'
+import type { DynamicParams } from '../../../types/router'
 
 // 仮の論文データ
 const papers = [
@@ -41,9 +42,8 @@ const papers = [
   }
 ]
 
-export default function TagPage() {
-  const params = useParams()
-  const tag = decodeURIComponent(params.tag as string)
+export default function TagPage({ params }: DynamicParams<'tag'>) {
+  const tag = decodeURIComponent(params.tag)
   const filtered = papers.filter(p => p.tags.includes(tag))
 
   return (
